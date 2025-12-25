@@ -7,7 +7,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// forward /user → user service
 app.use("/user", expressProxy("http://localhost:3001"));
 
 const port = process.env.PORT || 3000;
