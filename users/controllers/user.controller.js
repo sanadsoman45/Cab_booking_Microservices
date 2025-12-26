@@ -1,6 +1,7 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const blacklisttokenModel = require('../models/blacklisttoken.model');
 
 const register = async (req, res) => {
   try {
@@ -11,13 +12,14 @@ const register = async (req, res) => {
       return res.status(500).json({ msg: "User Already exists" });
     }
     const hash = await bcrypt.hash(password, 10);
-    const newUser = new userModel({ name, email, password });
+    const newUser = new userModel({ name, email, password:hash });
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
     res.cookie("token", token);
-    res.send({ msg: "User registered successfully" });
+    delete newUser._doc.password
+    res.send({ token, newUser });
   } catch (error) {
     return res.status(500).json({ msg: error });
   }
@@ -65,7 +67,9 @@ const logout = async (req, res) => {
 
 const profile = async (req, res) => {
   try {
-    res.send(req.user);
+    const user = req.user.toObject();
+    delete user.password;
+    res.json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
