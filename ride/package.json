@@ -1,9 +1,9 @@
 {
-  "name": "microservices",
+  "name": "ride",
   "version": "1.0.0",
-  "description": "",
+  "description": "rides microservice",
   "license": "ISC",
-  "author": "",
+  "author": "Sanad Soman",
   "type": "commonjs",
   "main": "app.js",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "amqplib": "^0.10.9",
+    "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "dotenv": "^17.2.3",

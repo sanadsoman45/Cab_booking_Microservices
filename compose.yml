@@ -1,7 +1,8 @@
-version: '1.0'
+version: "3.9"
+
 services:
   mongo:
-    image: mongo
+    image: mongo:7
     restart: always
     ports:
       - "27018:27017"
@@ -10,5 +11,19 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    restart: always
+    ports:
+      - "5672:5672"     
+      - "15672:15672"   
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
 volumes:
   mongo_data:
+  rabbitmq_data:

@@ -1,7 +1,11 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const blacklisttokenModel = require('../models/blacklisttoken.model');
+const blacklisttokenModel = require("../models/blacklisttoken.model");
+const { subscribeToQueue } = require("../service/rabbit");
+const EventEmitter = require("events");
+
+const rideEventEmitter = new EventEmitter();
 
 const register = async (req, res) => {
   try {
@@ -12,13 +16,13 @@ const register = async (req, res) => {
       return res.status(500).json({ msg: "User Already exists" });
     }
     const hash = await bcrypt.hash(password, 10);
-    const newUser = new userModel({ name, email, password:hash });
+    const newUser = new userModel({ name, email, password: hash });
     await newUser.save();
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
     res.cookie("token", token);
-    delete newUser._doc.password
+    delete newUser._doc.password;
     res.send({ token, newUser });
   } catch (error) {
     return res.status(500).json({ msg: error });
@@ -75,9 +79,37 @@ const profile = async (req, res) => {
   }
 };
 
+const acceptedRide = async (req, res) => {
+  let responded = false;
+
+  const onRideAccepted = (data) => {
+    if (responded) return;
+
+    responded = true;
+    clearTimeout(timeout);
+    res.status(200).json(data);
+  };
+
+  rideEventEmitter.once("ride-accepted", onRideAccepted);
+
+  const timeout = setTimeout(() => {
+    if (responded) return;
+
+    responded = true;
+    rideEventEmitter.removeListener("ride-accepted", onRideAccepted);
+    res.status(204).send();
+  }, 30000);
+};
+
+subscribeToQueue("ride-accepted", async (msg) => {
+  const data = JSON.parse(msg);
+  rideEventEmitter.emit("ride-accepted", data);
+});
+
 module.exports = {
   register,
   login,
   logout,
-  profile
+  profile,
+  acceptedRide,
 };

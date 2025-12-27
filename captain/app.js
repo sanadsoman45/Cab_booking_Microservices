@@ -14,8 +14,8 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(cookieParser());
 
-const userRoutes = require("./routes/user.routes");
-app.use("/", userRoutes);
+const captainRoutes = require("./routes/captain.routes");
+app.use("/", captainRoutes);
 app.get("/health", (req, res) => {
   res.send("OK");
 });
@@ -24,5 +24,5 @@ connect();
 
 const port = process.env.PORT || 3001
 app.listen(port, () => {
-  console.log(`User service is running on ${port}`);
+  console.log(`Captain service is running on ${port}`);
 });
