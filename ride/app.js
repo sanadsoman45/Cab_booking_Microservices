@@ -16,8 +16,13 @@ const rideRoutes = require("./routes/ride.route");
 app.use("/", rideRoutes);
 
 app.get("/health", (req, res) => {
-  res.send("OK");
+  res.status(200).json({
+    status: "ok",
+    service: "gateway",
+    timestamp: new Date().toISOString()
+  });
 });
+
 
 const startServer = async () => {
   try {

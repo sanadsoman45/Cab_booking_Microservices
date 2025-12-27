@@ -17,8 +17,13 @@ app.use(cookieParser());
 const captainRoutes = require("./routes/captain.routes");
 app.use("/", captainRoutes);
 app.get("/health", (req, res) => {
-  res.send("OK");
+  res.status(200).json({
+    status: "ok",
+    service: "gateway",
+    timestamp: new Date().toISOString()
+  });
 });
+
 
 connect();
 

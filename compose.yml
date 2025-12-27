@@ -31,6 +31,7 @@ services:
 
   user-service:
     build: ./users
+    image: user-service:1.1
     container_name: user-service
     restart: always
     ports:
@@ -48,6 +49,7 @@ services:
 
   ride-service:
     build: ./ride
+    image: ride-service:1.1
     container_name: ride-service
     restart: always
     ports:
@@ -82,6 +84,7 @@ services:
 
   gateway:
     build: ./gateway
+    image: gateway:1.1
     container_name: gateway
     restart: always
     ports:
