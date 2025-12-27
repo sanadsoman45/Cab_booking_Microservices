@@ -1,8 +1,7 @@
-version: "3.9"
-
 services:
   mongo:
     image: mongo:7
+    container_name: mongo
     restart: always
     ports:
       - "27018:27017"
@@ -14,15 +13,89 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
+    container_name: rabbitmq
     restart: always
     ports:
-      - "5672:5672"     
-      - "15672:15672"   
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  user-service:
+    build: ./users
+    container_name: user-service
+    restart: always
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./users/.env
+    environment:
+      MONGO_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/uber-user-service?authSource=admin
+      RABBIT_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+
+  ride-service:
+    build: ./ride
+    container_name: ride-service
+    restart: always
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./ride/.env
+    environment:
+      MONGO_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/uber-ride-service?authSource=admin
+      RABBIT_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+
+  captain-service:
+    build: ./captain
+    container_name: captain-service
+    restart: always
+    ports:
+      - "3002:3002"
+    env_file:
+      - ./captain/.env
+    environment:
+      MONGO_URL: mongodb://${MONGO_ROOT_USER}:${MONGO_ROOT_PASSWORD}@mongo:27017/uber-captain-service?authSource=admin
+      RABBIT_URL: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      mongo:
+        condition: service_started
+
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    restart: always
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./gateway/.env
+    environment:
+      USER_SERVICE_URL: http://user-service:3001
+      RIDE_SERVICE_URL: http://ride-service:3003
+      CAPTAIN_SERVICE_URL: http://captain-service:3002
+    depends_on:
+      - user-service
+      - ride-service
+      - captain-service
 
 volumes:
   mongo_data:
