@@ -1,13 +1,11 @@
 🚕 Cab Aggregator – Microservices Architecture
 
 This project demonstrates a microservices-based backend architecture for a cab aggregator platform.
-
-The system is divided into independent services, each responsible for a specific domain.
-Every service manages its own logic, dependencies, and security, making the system scalable, secure, and easy to maintain.
+The system is split into independent services, each responsible for a specific domain, enabling scalability, security, and maintainability.
 
 🧩 Services Overview
 
-The platform consists of the following core services:
+The platform consists of three core services that operate independently while communicating securely:
 
 👤 User Service
 
@@ -15,139 +13,122 @@ The platform consists of the following core services:
 
 🛣️ Ride Service
 
-Each service operates independently while communicating securely with others.
-
 👤 User Service
 
-The User Service manages everything related to a passenger using the platform.
+Manages everything related to passengers using the platform.
 
 Responsibilities
 
-Allows users to register securely
+User registration and secure authentication
 
-Enables users to log in and start a session
+Session-based login and logout
 
-Allows users to log out safely
+Access to user profile details
 
-Provides access to user profile information
-
-Allows users to view details of accepted rides
+Viewing accepted ride information
 
 Security & Protection
 
-User passwords are securely stored using hashing
+Passwords are stored securely using hashing
 
-A token-based session is created during login
+Token-based sessions are created on login
 
-Once a user logs out, the session token is blacklisted
+Tokens are blacklisted on logout and cannot be reused
 
-Blacklisted tokens cannot be reused, even if stolen
-
-Profile and ride-related information is protected, ensuring only authenticated users can access it
+Profile and ride data is accessible only to authenticated users
 
 Why This Matters
 
-This ensures:
+Prevents unauthorized access to personal data
 
-No unauthorized access to personal data
+Ensures sessions are properly invalidated
 
-Sessions are properly invalidated after logout
-
-Strong protection against token misuse
+Protects against token misuse
 
 🚗 Captain Service
 
-The Captain Service handles everything related to drivers on the platform.
+Handles all driver-related functionality.
 
 Responsibilities
 
-Allows captains to register and log in
+Captain registration and login
 
-Enables captains to log out securely
+Secure logout
 
-Provides access to captain profile details
+Access to captain profile details
 
-Allows captains to toggle their working availability
+Toggle working availability
 
-Notifies captains when a new ride becomes available
+Receive notifications for new ride requests
 
 Availability & Ride Notification
 
-Captains can control whether they are available to accept rides
+Captains control when they are available to accept rides
 
-When available, the system waits for new ride requests
+When available, the system listens for new ride requests
 
-Ride details are shown instantly if a booking occurs within a short time window
+Ride details are delivered instantly within a short time window
 
-If no ride appears, the request automatically expires
+Requests expire automatically if no ride is assigned
 
 Security & Protection
 
-All sensitive captain actions are protected
+All sensitive actions are protected
 
-Only authenticated captains can change availability or receive ride information
+Only authenticated captains can change availability or receive ride data
 
 Why This Matters
 
-This ensures:
+Ensures only active captains receive ride requests
 
-Only active captains receive ride requests
+Prevents unauthorized access to ride information
 
-No unauthorized access to ride data
-
-Real-time and controlled ride assignment flow
+Enables real-time and controlled ride assignment
 
 🛣️ Ride Service
 
-The Ride Service is responsible for managing the lifecycle of a ride.
+Responsible for managing the ride lifecycle.
 
 Responsibilities
 
-Allows users to create rides
+Ride creation by users
 
-Allows captains to accept rides
+Ride acceptance by captains
 
 Role-Based Protection
 
-Ride creation is restricted to users only
+Only users can create rides
 
-Ride acceptance is restricted to captains only
+Only captains can accept rides
 
-The system strictly prevents:
-
-Captains from creating rides
-
-Users from accepting rides
+Prevents role misuse and unauthorized actions
 
 Why This Matters
 
-This ensures:
+Maintains clear separation of responsibilities
 
-Clear separation of responsibilities
+Enforces platform rules strictly
 
-No role confusion or misuse
-
-Strong enforcement of platform rules
+Ensures system integrity
 
 🔐 Authentication & Safety Highlights
 
-Secure session handling using tokens
+Secure token-based session handling
 
 Tokens are invalidated on logout
 
 Protected actions require proper authentication
 
-Role-based access prevents unauthorized operations
+Strong role-based access control
 
 📌 Key Takeaways
 
-Clean separation of services
+Clear separation of services
 
-Secure authentication flow
+Secure authentication and session management
 
-Clear role-based access control
+Strict role-based access control
 
-Scalable and maintainable system design
+Scalable and maintainable architecture
 
-Focused on real-world cab aggregator behavior
-
+Designed around real-world cab aggregator behavior
