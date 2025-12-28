@@ -20,7 +20,6 @@ A production-ready microservices-based backend architecture for a cab aggregator
 - [API Gateway](#-api-gateway)
 - [Security Highlights](#-security-highlights)
 - [Contributing](#-contributing)
-- [License](#-license)
 
 ---
 
