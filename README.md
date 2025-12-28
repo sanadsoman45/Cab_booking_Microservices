@@ -226,7 +226,7 @@ JWT_SECRET=your_jwt_secret_key_here
 ```env
 PORT=3003
 JWT_SECRET=your_jwt_secret_key_here
-BASE_URL=http://gateway:8080
+BASE_URL=http://gateway:3000
 ```
 
 ---
@@ -234,7 +234,7 @@ BASE_URL=http://gateway:8080
 ### 📁 Gateway Service (`/gateway/.env`)
 
 ```env
-PORT=8080
+PORT=3000
 ```
 
 ---
@@ -308,21 +308,21 @@ You should see all services listed and running.
 
 ### 🚪 API Gateway
 
-The **API Gateway** will be available on the port defined in `gateway/.env` (default: `8080`).
+The **API Gateway** will be available on the port defined in `gateway/.env` (default: `3000`).
 
 All client requests should go through the Gateway:
 
 ```
-http://localhost:8080
+http://localhost:3000
 ```
 
 ### 📡 Service Endpoints
 
 | Service | Internal Port | Access Via Gateway |
 |---------|--------------|-------------------|
-| **User Service** | 3001 | `http://localhost:8080/users/*` |
-| **Captain Service** | 3002 | `http://localhost:8080/captains/*` |
-| **Ride Service** | 3003 | `http://localhost:8080/rides/*` |
+| **User Service** | 3001 | `http://localhost:3000/users/*` |
+| **Captain Service** | 3002 | `http://localhost:3000/captains/*` |
+| **Ride Service** | 3003 | `http://localhost:3000/rides/*` |
 
 ---
 
